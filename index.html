@@ -1640,23 +1640,9 @@
 
         function generatePalette() {
 
-            const rgb =
-                hexToRgb(selectedColor);
-
-
-            const hsl =
-                rgbToHsl(
-                    rgb.r,
-                    rgb.g,
-                    rgb.b
-                );
-
-
-            let sub;
-            let similar;
-            let accent;
-            let dark;
-
+           /* =========================
+                色の計算コピペ１
+            ========================== */
 
             /* -------------------------
                統一感重視
@@ -1862,7 +1848,426 @@
         }
 
 
-        /* =========================
+        
+/* =========================
+   配色生成
+========================= */
+
+document
+    .getElementById("generateButton")
+    .addEventListener(
+        "click",
+        generatePalette
+    );
+
+
+function generatePalette() {
+
+    /* =========================
+       ベースカラーをHSLに変換
+    ========================== */
+
+    const rgb =
+        hexToRgb(selectedColor);
+
+    const hsl =
+        rgbToHsl(
+            rgb.r,
+            rgb.g,
+            rgb.b
+        );
+
+
+    /* =========================
+       雰囲気による調整
+    ========================== */
+
+    let saturation;
+    let lightness;
+
+
+    switch (selectedMood) {
+
+        /* -------------------------
+           爽やか
+        ------------------------- */
+
+        case "fresh":
+
+            saturation =
+                Math.min(
+                    85,
+                    hsl.s + 5
+                );
+
+            lightness =
+                Math.min(
+                    75,
+                    hsl.l + 10
+                );
+
+            break;
+
+
+        /* -------------------------
+           かわいい
+        ------------------------- */
+
+        case "cute":
+
+            saturation =
+                Math.max(
+                    35,
+                    hsl.s - 10
+                );
+
+            lightness =
+                Math.min(
+                    82,
+                    hsl.l + 18
+                );
+
+            break;
+
+
+        /* -------------------------
+           クール
+        ------------------------- */
+
+        case "cool":
+
+            saturation =
+                Math.max(
+                    25,
+                    hsl.s - 10
+                );
+
+            lightness =
+                Math.max(
+                    30,
+                    hsl.l - 8
+                );
+
+            break;
+
+
+        /* -------------------------
+           ナチュラル
+        ------------------------- */
+
+        case "natural":
+
+            saturation =
+                Math.max(
+                    30,
+                    hsl.s - 20
+                );
+
+            lightness =
+                Math.min(
+                    70,
+                    hsl.l + 5
+                );
+
+            break;
+
+
+        /* -------------------------
+           上品
+        ------------------------- */
+
+        case "elegant":
+
+            saturation =
+                Math.max(
+                    25,
+                    hsl.s - 25
+                );
+
+            lightness =
+                hsl.l;
+
+            break;
+
+
+        /* -------------------------
+           元気
+        ------------------------- */
+
+        case "active":
+
+            saturation =
+                Math.min(
+                    95,
+                    hsl.s + 15
+                );
+
+            lightness =
+                Math.min(
+                    70,
+                    hsl.l + 5
+                );
+
+            break;
+
+
+        /* -------------------------
+           万が一の場合
+        ------------------------- */
+
+        default:
+
+            saturation =
+                hsl.s;
+
+            lightness =
+                hsl.l;
+
+    }
+
+
+    /* =========================
+       配色を入れる変数
+    ========================== */
+
+    let sub;
+    let similar;
+    let accent;
+    let dark;
+
+
+    /* =========================
+       統一感重視
+    ========================== */
+
+    if (
+        selectedType === "harmony"
+    ) {
+
+        sub =
+            hslToHex(
+                hsl.h,
+                saturation,
+                Math.min(
+                    90,
+                    lightness + 20
+                )
+            );
+
+
+        similar =
+            hslToHex(
+                (hsl.h + 30) % 360,
+                saturation,
+                lightness
+            );
+
+
+        accent =
+            hslToHex(
+                (hsl.h + 330) % 360,
+                saturation,
+                lightness
+            );
+
+    }
+
+
+    /* =========================
+       メリハリ重視
+    ========================== */
+
+    else if (
+        selectedType === "contrast"
+    ) {
+
+        sub =
+            hslToHex(
+                hsl.h,
+                saturation,
+                Math.min(
+                    90,
+                    lightness + 15
+                )
+            );
+
+
+        similar =
+            hslToHex(
+                (hsl.h + 60) % 360,
+                saturation,
+                lightness
+            );
+
+
+        accent =
+            hslToHex(
+                (hsl.h + 180) % 360,
+                saturation,
+                lightness
+            );
+
+    }
+
+
+    /* =========================
+       バランス重視
+    ========================== */
+
+    else {
+
+        sub =
+            hslToHex(
+                hsl.h,
+                saturation,
+                Math.min(
+                    90,
+                    lightness + 18
+                )
+            );
+
+
+        similar =
+            hslToHex(
+                (hsl.h + 30) % 360,
+                saturation,
+                lightness
+            );
+
+
+        accent =
+            hslToHex(
+                (hsl.h + 180) % 360,
+                saturation,
+                lightness
+            );
+
+    }
+
+
+    /* =========================
+       濃い色
+    ========================== */
+
+    dark =
+        hslToHex(
+            hsl.h,
+            Math.max(
+                20,
+                saturation - 5
+            ),
+            Math.max(
+                15,
+                lightness - 30
+            )
+        );
+
+
+    /* =========================
+       結果を表示
+    ========================== */
+
+    setColor(
+        "baseColor",
+        "baseCode",
+        selectedColor
+    );
+
+
+    setColor(
+        "subColor",
+        "subCode",
+        sub
+    );
+
+
+    setColor(
+        "similarColor",
+        "similarCode",
+        similar
+    );
+
+
+    setColor(
+        "accentColor",
+        "accentCode",
+        accent
+    );
+
+
+    setColor(
+        "darkColor",
+        "darkCode",
+        dark
+    );
+
+
+    /* =========================
+       説明文
+    ========================== */
+
+    const typeText = {
+
+        harmony:
+            "統一感を重視し、ベースカラーになじむ配色です。",
+
+        contrast:
+            "色の違いを活かし、メリハリのある配色です。",
+
+        balance:
+            "統一感とアクセントをバランスよく取り入れた配色です。"
+
+    };
+
+
+    const moodText = {
+
+        fresh:
+            "明るく爽やかな印象になるよう調整しています。",
+
+        cute:
+            "明るく柔らかな印象になるよう調整しています。",
+
+        cool:
+            "落ち着いたクールな印象になるよう調整しています。",
+
+        natural:
+            "彩度を抑え、自然で穏やかな印象になるよう調整しています。",
+
+        elegant:
+            "彩度を抑え、上品で落ち着いた印象になるよう調整しています。",
+
+        active:
+            "鮮やかで明るく、元気な印象になるよう調整しています。"
+
+    };
+
+
+    document
+        .getElementById(
+            "resultDescription"
+        )
+        .textContent =
+            typeText[selectedType]
+            + " "
+            + moodText[selectedMood];
+
+
+    /* =========================
+       結果表示
+    ========================== */
+
+    result.style.display =
+        "block";
+
+
+    result.scrollIntoView({
+        behavior: "smooth"
+    });
+
+    }
+
+            /* =========================
            色を結果にセット
         ========================== */
 
@@ -1933,14 +2338,9 @@
 
             }) 
        
-         /* =========================
-        　ここからは、雰囲気に応じた配色計算
-        ========================== */
-
     </script>
 
 </body>
 
 </html>
-
 
