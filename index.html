@@ -1,1 +1,1944 @@
+```html
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>いろナビ - 1色から配色を見つけよう</title>
+
+    <style>
+
+        /* =========================
+           基本設定
+        ========================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family:
+                "Segoe UI",
+                "Yu Gothic",
+                "Hiragino Kaku Gothic ProN",
+                sans-serif;
+
+            background: #f7f8fa;
+            color: #333;
+            line-height: 1.7;
+        }
+
+
+        /* =========================
+           ヘッダー
+        ========================= */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 18px 40px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           メイン
+        ========================= */
+
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+
+        /* =========================
+           タイトル
+        ========================= */
+
+        .hero {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: #666;
+        }
+
+
+        /* =========================
+           STEP
+        ========================= */
+
+        .step {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+
+            box-shadow:
+                0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .step-title {
+            margin-bottom: 25px;
+        }
+
+        .step-number {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .step-title h2 {
+            font-size: 24px;
+        }
+
+
+        /* =========================
+           色入力
+        ========================= */
+
+        .color-input {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        #colorPicker {
+            width: 70px;
+            height: 50px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #hexInput,
+        #colorNameInput {
+            width: 180px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+
+            font-size: 16px;
+        }
+
+        .search-button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+
+            background: #333;
+            color: #fff;
+
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            opacity: 0.8;
+        }
+
+
+        /* =========================
+           色名検索結果
+        ========================= */
+
+        #colorSearchResults {
+            margin-top: 25px;
+
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(130px, 1fr));
+
+            gap: 12px;
+        }
+
+        .color-name-card {
+            border: 1px solid #ddd;
+            background: #fff;
+
+            border-radius: 10px;
+            overflow: hidden;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .color-name-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .name-color {
+            height: 70px;
+        }
+
+        .name-info {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .name-info strong {
+            display: block;
+        }
+
+        .name-info small {
+            color: #777;
+        }
+
+
+        /* =========================
+           選択した色
+        ========================= */
+
+        .selected-color {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+
+            margin-top: 25px;
+        }
+
+        #selectedColorPreview {
+            width: 60px;
+            height: 60px;
+
+            border-radius: 50%;
+
+            border: 4px solid #fff;
+
+            box-shadow:
+                0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+
+        /* =========================
+           選択ボタン
+        ========================= */
+
+        .option-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+        .option {
+            padding: 20px;
+
+            border: 2px solid #ddd;
+            border-radius: 15px;
+
+            background: #fff;
+
+            cursor: pointer;
+
+            text-align: center;
+
+            transition: 0.2s;
+        }
+
+        .option:hover {
+            border-color: #999;
+        }
+
+        .option.selected {
+            border-color: #333;
+            background: #f3f3f3;
+        }
+
+        .option h3 {
+            margin-bottom: 5px;
+        }
+
+        .option p {
+            font-size: 13px;
+            color: #777;
+        }
+
+
+        /* =========================
+           配色を作るボタン
+        ========================= */
+
+        .generate-area {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #generateButton {
+            padding: 15px 50px;
+
+            border: none;
+            border-radius: 30px;
+
+            background: #333;
+            color: #fff;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        #generateButton:hover {
+            opacity: 0.8;
+        }
+
+
+        /* =========================
+           結果
+        ========================= */
+
+        #result {
+            display: none;
+        }
+
+        .result-description {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #666;
+        }
+
+        .palette {
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 15px;
+        }
+
+        .color-card {
+            background: #fff;
+
+            border-radius: 15px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .color-box {
+            height: 150px;
+        }
+
+        .color-info {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .color-info h3 {
+            margin-bottom: 5px;
+        }
+
+        .color-code {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .copy-button {
+            border: none;
+            background: #eee;
+
+            padding: 7px 15px;
+
+            border-radius: 20px;
+
+            cursor: pointer;
+        }
+
+
+        /* =========================
+           フッター
+        ========================= */
+
+        footer {
+            text-align: center;
+            padding: 30px;
+
+            color: #888;
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           スマートフォン
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            header {
+                padding: 18px 20px;
+            }
+
+            main {
+                padding: 40px 15px;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+
+            .option-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .palette {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .color-box {
+                height: 120px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         ヘッダー
+    ========================== -->
+
+    <header>
+
+        <div class="logo">
+            いろナビ
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         メイン
+    ========================== -->
+
+    <main>
+
+
+        <!-- タイトル -->
+
+        <section class="hero">
+
+            <h1>
+                1色から、配色を見つけよう。
+            </h1>
+
+            <p>
+                「この色に何色を合わせればいい？」
+                を簡単に解決する配色アプリ
+            </p>
+
+        </section>
+
+
+        <!-- =========================
+             STEP 1
+        ========================== -->
+
+        <section class="step">
+
+            <div class="step-title">
+
+                <span class="step-number">
+                    STEP 1
+                </span>
+
+                <h2>
+                    ベースとなる色を選ぶ
+                </h2>
+
+            </div>
+
+
+            <!-- HEX -->
+
+            <div class="color-input">
+
+                <input
+                    type="color"
+                    id="colorPicker"
+                    value="#6FA8DC"
+                >
+
+                <input
+                    type="text"
+                    id="hexInput"
+                    value="#6FA8DC"
+                    placeholder="#6FA8DC"
+                    maxlength="7"
+                >
+
+                <button
+                    class="search-button"
+                    id="hexSearchButton"
+                >
+                    カラーコードを決定
+                </button>
+
+            </div>
+
+
+            <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+
+
+            <!-- 色名 -->
+
+            <div class="color-input">
+
+                <input
+                    type="text"
+                    id="colorNameInput"
+                    placeholder="色の名前を検索"
+                >
+
+                <button
+                    class="search-button"
+                    id="nameSearchButton"
+                >
+                    色名を検索
+                </button>
+
+            </div>
+
+
+            <!-- 色名検索結果 -->
+
+            <div id="colorSearchResults"></div>
+
+
+            <!-- 選択した色 -->
+
+            <div class="selected-color">
+
+                <div id="selectedColorPreview"></div>
+
+                <div>
+
+                    <strong>
+                        選択中の色
+                    </strong>
+
+                    <p id="selectedColorText">
+                        #6FA8DC
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             STEP 2
+        ========================== -->
+
+        <section class="step">
+
+            <div class="step-title">
+
+                <span class="step-number">
+                    STEP 2
+                </span>
+
+                <h2>
+                    どんな配色にしたい？
+                </h2>
+
+            </div>
+
+
+            <div class="option-grid">
+
+                <div
+                    class="option selected"
+                    data-type="harmony"
+                >
+
+                    <h3>
+                        🌿 統一感重視
+                    </h3>
+
+                    <p>
+                        なじみやすい色を中心に
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="option"
+                    data-type="contrast"
+                >
+
+                    <h3>
+                        ⚡ メリハリ重視
+                    </h3>
+
+                    <p>
+                        反対色を使って目立たせる
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="option"
+                    data-type="balance"
+                >
+
+                    <h3>
+                        ⚖️ バランス重視
+                    </h3>
+
+                    <p>
+                        統一感とアクセントを両立
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             STEP 3
+        ========================== -->
+
+        <section class="step">
+
+            <div class="step-title">
+
+                <span class="step-number">
+                    STEP 3
+                </span>
+
+                <h2>
+                    どんな雰囲気にしたい？
+                </h2>
+
+            </div>
+
+
+            <div class="option-grid">
+
+                <div
+                    class="option selected"
+                    data-mood="fresh"
+                >
+
+                    <h3>
+                        🫧 爽やか
+                    </h3>
+
+                    <p>
+                        明るくすっきりした印象
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="option"
+                    data-mood="cute"
+                >
+
+                    <h3>
+                        🌸 かわいい
+                    </h3>
+
+                    <p>
+                        明るく柔らかい印象
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="option"
+                    data-mood="cool"
+                >
+
+                    <h3>
+                        🖤 クール
+                    </h3>
+
+                    <p>
+                        落ち着いた印象
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="option"
+                    data-mood="natural"
+                >
+
+                    <h3>
+                        🌿 ナチュラル
+                    </h3>
+
+                    <p>
+                        自然で穏やかな印象
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="option"
+                    data-mood="elegant"
+                >
+
+                    <h3>
+                        ✨ 上品
+                    </h3>
+
+                    <p>
+                        落ち着きのある印象
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="option"
+                    data-mood="active"
+                >
+
+                    <h3>
+                        ☀️ 元気
+                    </h3>
+
+                    <p>
+                        明るく活発な印象
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="generate-area">
+
+                <button id="generateButton">
+                    ✨ 配色を作る
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             STEP 4 結果
+        ========================== -->
+
+        <section
+            class="step"
+            id="result"
+        >
+
+            <div class="step-title">
+
+                <span class="step-number">
+                    RESULT
+                </span>
+
+                <h2>
+                    あなたにおすすめの配色
+                </h2>
+
+            </div>
+
+
+            <p
+                class="result-description"
+                id="resultDescription"
+            >
+                選択した色から配色を作りました。
+            </p>
+
+
+            <div class="palette">
+
+
+                <!-- ベース -->
+
+                <div class="color-card">
+
+                    <div
+                        class="color-box"
+                        id="baseColor"
+                    ></div>
+
+                    <div class="color-info">
+
+                        <h3>
+                            ベース
+                        </h3>
+
+                        <p
+                            class="color-code"
+                            id="baseCode"
+                        ></p>
+
+                        <button
+                            class="copy-button"
+                            data-target="baseCode"
+                        >
+                            コピー
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- サブ -->
+
+                <div class="color-card">
+
+                    <div
+                        class="color-box"
+                        id="subColor"
+                    ></div>
+
+                    <div class="color-info">
+
+                        <h3>
+                            サブカラー
+                        </h3>
+
+                        <p
+                            class="color-code"
+                            id="subCode"
+                        ></p>
+
+                        <button
+                            class="copy-button"
+                            data-target="subCode"
+                        >
+                            コピー
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- なじみ -->
+
+                <div class="color-card">
+
+                    <div
+                        class="color-box"
+                        id="similarColor"
+                    ></div>
+
+                    <div class="color-info">
+
+                        <h3>
+                            なじみ色
+                        </h3>
+
+                        <p
+                            class="color-code"
+                            id="similarCode"
+                        ></p>
+
+                        <button
+                            class="copy-button"
+                            data-target="similarCode"
+                        >
+                            コピー
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- アクセント -->
+
+                <div class="color-card">
+
+                    <div
+                        class="color-box"
+                        id="accentColor"
+                    ></div>
+
+                    <div class="color-info">
+
+                        <h3>
+                            アクセント
+                        </h3>
+
+                        <p
+                            class="color-code"
+                            id="accentCode"
+                        ></p>
+
+                        <button
+                            class="copy-button"
+                            data-target="accentCode"
+                        >
+                            コピー
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- 濃い色 -->
+
+                <div class="color-card">
+
+                    <div
+                        class="color-box"
+                        id="darkColor"
+                    ></div>
+
+                    <div class="color-info">
+
+                        <h3>
+                            濃い色
+                        </h3>
+
+                        <p
+                            class="color-code"
+                            id="darkCode"
+                        ></p>
+
+                        <button
+                            class="copy-button"
+                            data-target="darkCode"
+                        >
+                            コピー
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        © 2026 いろナビ
+
+    </footer>
+
+
+
+    <!-- =========================
+         JavaScript
+    ========================== -->
+
+    <script>
+
+
+        /* =========================
+           色データ
+        ========================== */
+
+        const colors = [
+
+            {
+                name: "赤",
+                hex: "#FF0000"
+            },
+
+            {
+                name: "朱色",
+                hex: "#EB6101"
+            },
+
+            {
+                name: "オレンジ",
+                hex: "#FFA500"
+            },
+
+            {
+                name: "黄色",
+                hex: "#FFD700"
+            },
+
+            {
+                name: "黄緑",
+                hex: "#9ACD32"
+            },
+
+            {
+                name: "緑",
+                hex: "#008000"
+            },
+
+            {
+                name: "深緑",
+                hex: "#006400"
+            },
+
+            {
+                name: "水色",
+                hex: "#87CEEB"
+            },
+
+            {
+                name: "空色",
+                hex: "#87CEEB"
+            },
+
+            {
+                name: "青",
+                hex: "#0000FF"
+            },
+
+            {
+                name: "紺",
+                hex: "#000080"
+            },
+
+            {
+                name: "藍色",
+                hex: "#165E83"
+            },
+
+            {
+                name: "紫",
+                hex: "#800080"
+            },
+
+            {
+                name: "藤色",
+                hex: "#BDB5D5"
+            },
+
+            {
+                name: "赤紫",
+                hex: "#C71585"
+            },
+
+            {
+                name: "ピンク",
+                hex: "#FFC0CB"
+            },
+
+            {
+                name: "桜色",
+                hex: "#FFDBE5"
+            },
+
+            {
+                name: "桃色",
+                hex: "#F09199"
+            },
+
+            {
+                name: "茶色",
+                hex: "#8B4513"
+            },
+
+            {
+                name: "ベージュ",
+                hex: "#F5F5DC"
+            },
+
+            {
+                name: "こげ茶",
+                hex: "#4A2C2A"
+            },
+
+            {
+                name: "白",
+                hex: "#FFFFFF"
+            },
+
+            {
+                name: "灰色",
+                hex: "#808080"
+            },
+
+            {
+                name: "黒",
+                hex: "#000000"
+            }
+
+        ];
+
+
+        /* =========================
+           HTML要素
+        ========================== */
+
+        const colorPicker =
+            document.getElementById("colorPicker");
+
+        const hexInput =
+            document.getElementById("hexInput");
+
+        const colorNameInput =
+            document.getElementById("colorNameInput");
+
+        const selectedPreview =
+            document.getElementById("selectedColorPreview");
+
+        const selectedText =
+            document.getElementById("selectedColorText");
+
+        const result =
+            document.getElementById("result");
+
+
+        /* =========================
+           現在選択している色
+        ========================== */
+
+        let selectedColor = "#6FA8DC";
+
+        let selectedType = "harmony";
+
+        let selectedMood = "fresh";
+
+
+        /* =========================
+           色を選択
+        ========================== */
+
+        function selectColor(hex) {
+
+            selectedColor =
+                hex.toUpperCase();
+
+            colorPicker.value =
+                selectedColor;
+
+            hexInput.value =
+                selectedColor;
+
+            selectedPreview.style.backgroundColor =
+                selectedColor;
+
+            selectedText.textContent =
+                selectedColor;
+
+        }
+
+
+        /* =========================
+           初期表示
+        ========================== */
+
+        selectColor("#6FA8DC");
+
+
+        /* =========================
+           カラーピッカー
+        ========================== */
+
+        colorPicker.addEventListener(
+            "input",
+            function () {
+
+                selectColor(
+                    colorPicker.value
+                );
+
+            }
+        );
+
+
+        /* =========================
+           HEXコード検索
+        ========================== */
+
+        document
+            .getElementById("hexSearchButton")
+            .addEventListener(
+                "click",
+                function () {
+
+                    let value =
+                        hexInput.value.trim();
+
+                    if (!value.startsWith("#")) {
+                        value = "#" + value;
+                    }
+
+                    if (
+                        /^#[0-9A-Fa-f]{6}$/
+                            .test(value)
+                    ) {
+
+                        selectColor(value);
+
+                    } else {
+
+                        alert(
+                            "正しいHEXカラーコードを入力してください。\n例：#6FA8DC"
+                        );
+
+                    }
+
+                }
+            );
+
+
+        /* =========================
+           色名検索
+        ========================== */
+
+        document
+            .getElementById("nameSearchButton")
+            .addEventListener(
+                "click",
+                searchColorName
+            );
+
+
+        function searchColorName() {
+
+            const keyword =
+                colorNameInput.value
+                    .trim()
+                    .toLowerCase();
+
+
+            const results =
+                document.getElementById(
+                    "colorSearchResults"
+                );
+
+
+            results.innerHTML = "";
+
+
+            if (!keyword) {
+
+                results.innerHTML =
+                    "<p>色の名前を入力してください。</p>";
+
+                return;
+
+            }
+
+
+            const matched =
+                colors.filter(color =>
+                    color.name
+                        .toLowerCase()
+                        .includes(keyword)
+                );
+
+
+            if (matched.length === 0) {
+
+                results.innerHTML =
+                    "<p>該当する色が見つかりませんでした。</p>";
+
+                return;
+
+            }
+
+
+            matched.forEach(color => {
+
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "color-name-card";
+
+
+                card.innerHTML = `
+
+                    <div
+                        class="name-color"
+                        style="background-color:${color.hex}"
+                    ></div>
+
+                    <div class="name-info">
+
+                        <strong>
+                            ${color.name}
+                        </strong>
+
+                        <small>
+                            ${color.hex}
+                        </small>
+
+                    </div>
+
+                `;
+
+
+                card.addEventListener(
+                    "click",
+                    function () {
+
+                        selectColor(color.hex);
+
+                    }
+                );
+
+
+                results.appendChild(card);
+
+            });
+
+        }
+
+
+        /* =========================
+           配色タイプ選択
+        ========================== */
+
+        document
+            .querySelectorAll(
+                "[data-type]"
+            )
+            .forEach(option => {
+
+                option.addEventListener(
+                    "click",
+                    function () {
+
+                        document
+                            .querySelectorAll(
+                                "[data-type]"
+                            )
+                            .forEach(item =>
+                                item.classList
+                                    .remove("selected")
+                            );
+
+
+                        option.classList
+                            .add("selected");
+
+
+                        selectedType =
+                            option.dataset.type;
+
+                    }
+                );
+
+            });
+
+
+        /* =========================
+           雰囲気選択
+        ========================== */
+
+        document
+            .querySelectorAll(
+                "[data-mood]"
+            )
+            .forEach(option => {
+
+                option.addEventListener(
+                    "click",
+                    function () {
+
+                        document
+                            .querySelectorAll(
+                                "[data-mood]"
+                            )
+                            .forEach(item =>
+                                item.classList
+                                    .remove("selected")
+                            );
+
+
+                        option.classList
+                            .add("selected");
+
+
+                        selectedMood =
+                            option.dataset.mood;
+
+                    }
+                );
+
+            });
+
+
+        /* =========================
+           HEX → RGB
+        ========================== */
+
+        function hexToRgb(hex) {
+
+            hex =
+                hex.replace("#", "");
+
+            return {
+
+                r:
+                    parseInt(
+                        hex.substring(0, 2),
+                        16
+                    ),
+
+                g:
+                    parseInt(
+                        hex.substring(2, 4),
+                        16
+                    ),
+
+                b:
+                    parseInt(
+                        hex.substring(4, 6),
+                        16
+                    )
+
+            };
+
+        }
+
+
+        /* =========================
+           RGB → HEX
+        ========================== */
+
+        function rgbToHex(r, g, b) {
+
+            return "#" +
+
+                [r, g, b]
+
+                    .map(value =>
+                        Math
+                            .max(
+                                0,
+                                Math.min(
+                                    255,
+                                    Math.round(value)
+                                )
+                            )
+                            .toString(16)
+                            .padStart(2, "0")
+                    )
+
+                    .join("")
+
+                    .toUpperCase();
+
+        }
+
+
+        /* =========================
+           RGB → HSL
+        ========================== */
+
+        function rgbToHsl(r, g, b) {
+
+            r /= 255;
+            g /= 255;
+            b /= 255;
+
+
+            const max =
+                Math.max(r, g, b);
+
+            const min =
+                Math.min(r, g, b);
+
+
+            let h = 0;
+            let s = 0;
+
+            const l =
+                (max + min) / 2;
+
+
+            if (max !== min) {
+
+                const d =
+                    max - min;
+
+
+                s =
+                    l > 0.5
+                        ? d / (2 - max - min)
+                        : d / (max + min);
+
+
+                switch (max) {
+
+                    case r:
+
+                        h =
+                            (g - b) / d
+                            + (g < b ? 6 : 0);
+
+                        break;
+
+
+                    case g:
+
+                        h =
+                            (b - r) / d + 2;
+
+                        break;
+
+
+                    case b:
+
+                        h =
+                            (r - g) / d + 4;
+
+                        break;
+
+                }
+
+
+                h /= 6;
+
+            }
+
+
+            return {
+
+                h: h * 360,
+
+                s: s * 100,
+
+                l: l * 100
+
+            };
+
+        }
+
+
+        /* =========================
+           HSL → HEX
+        ========================== */
+
+        function hslToHex(h, s, l) {
+
+            s /= 100;
+            l /= 100;
+
+
+            const c =
+                (1 -
+                    Math.abs(
+                        2 * l - 1
+                    )
+                ) * s;
+
+
+            const x =
+                c *
+                (
+                    1 -
+                    Math.abs(
+                        (h / 60) % 2 - 1
+                    )
+                );
+
+
+            const m =
+                l - c / 2;
+
+
+            let r = 0;
+            let g = 0;
+            let b = 0;
+
+
+            if (h < 60) {
+
+                r = c;
+                g = x;
+
+            } else if (h < 120) {
+
+                r = x;
+                g = c;
+
+            } else if (h < 180) {
+
+                g = c;
+                b = x;
+
+            } else if (h < 240) {
+
+                g = x;
+                b = c;
+
+            } else if (h < 300) {
+
+                r = x;
+                b = c;
+
+            } else {
+
+                r = c;
+                b = x;
+
+            }
+
+
+            return rgbToHex(
+
+                (r + m) * 255,
+                (g + m) * 255,
+                (b + m) * 255
+
+            );
+
+        }
+
+
+        /* =========================
+           配色生成
+        ========================== */
+
+        document
+            .getElementById("generateButton")
+            .addEventListener(
+                "click",
+                generatePalette
+            );
+
+
+        function generatePalette() {
+
+            const rgb =
+                hexToRgb(selectedColor);
+
+
+            const hsl =
+                rgbToHsl(
+                    rgb.r,
+                    rgb.g,
+                    rgb.b
+                );
+
+
+            let sub;
+            let similar;
+            let accent;
+            let dark;
+
+
+            /* -------------------------
+               統一感重視
+            ------------------------- */
+
+            if (
+                selectedType === "harmony"
+            ) {
+
+                sub =
+                    hslToHex(
+                        hsl.h,
+                        hsl.s,
+                        Math.min(
+                            90,
+                            hsl.l + 25
+                        )
+                    );
+
+
+                similar =
+                    hslToHex(
+                        (hsl.h + 30) % 360,
+                        hsl.s,
+                        hsl.l
+                    );
+
+
+                accent =
+                    hslToHex(
+                        (hsl.h + 330) % 360,
+                        hsl.s,
+                        hsl.l
+                    );
+
+            }
+
+
+            /* -------------------------
+               メリハリ重視
+            ------------------------- */
+
+            else if (
+                selectedType === "contrast"
+            ) {
+
+                sub =
+                    hslToHex(
+                        hsl.h,
+                        hsl.s,
+                        Math.min(
+                            90,
+                            hsl.l + 20
+                        )
+                    );
+
+
+                similar =
+                    hslToHex(
+                        (hsl.h + 60) % 360,
+                        hsl.s,
+                        hsl.l
+                    );
+
+
+                accent =
+                    hslToHex(
+                        (hsl.h + 180) % 360,
+                        hsl.s,
+                        hsl.l
+                    );
+
+            }
+
+
+            /* -------------------------
+               バランス重視
+            ------------------------- */
+
+            else {
+
+                sub =
+                    hslToHex(
+                        hsl.h,
+                        hsl.s,
+                        Math.min(
+                            90,
+                            hsl.l + 20
+                        )
+                    );
+
+
+                similar =
+                    hslToHex(
+                        (hsl.h + 30) % 360,
+                        hsl.s,
+                        hsl.l
+                    );
+
+
+                accent =
+                    hslToHex(
+                        (hsl.h + 180) % 360,
+                        hsl.s,
+                        hsl.l
+                    );
+
+            }
+
+
+            /* -------------------------
+               濃い色
+            ------------------------- */
+
+            dark =
+                hslToHex(
+                    hsl.h,
+                    hsl.s,
+                    Math.max(
+                        15,
+                        hsl.l - 30
+                    )
+                );
+
+
+            /* =========================
+               結果を表示
+            ========================== */
+
+            setColor(
+                "baseColor",
+                "baseCode",
+                selectedColor
+            );
+
+
+            setColor(
+                "subColor",
+                "subCode",
+                sub
+            );
+
+
+            setColor(
+                "similarColor",
+                "similarCode",
+                similar
+            );
+
+
+            setColor(
+                "accentColor",
+                "accentCode",
+                accent
+            );
+
+
+            setColor(
+                "darkColor",
+                "darkCode",
+                dark
+            );
+
+
+            /* =========================
+               説明文
+            ========================== */
+
+            const typeText = {
+
+                harmony:
+                    "統一感を重視した配色です。",
+
+                contrast:
+                    "メリハリを重視した配色です。",
+
+                balance:
+                    "統一感とアクセントを両立した配色です。"
+
+            };
+
+
+            document
+                .getElementById(
+                    "resultDescription"
+                )
+                .textContent =
+                    typeText[selectedType];
+
+
+            /* =========================
+               結果表示
+            ========================== */
+
+            result.style.display =
+                "block";
+
+
+            result.scrollIntoView({
+                behavior: "smooth"
+            });
+
+        }
+
+
+        /* =========================
+           色を結果にセット
+        ========================== */
+
+        function setColor(
+            boxId,
+            codeId,
+            color
+        ) {
+
+            document
+                .getElementById(boxId)
+                .style.backgroundColor =
+                    color;
+
+
+            document
+                .getElementById(codeId)
+                .textContent =
+                    color;
+
+        }
+
+
+        /* =========================
+           コピー
+        ========================== */
+
+        document
+            .querySelectorAll(
+                ".copy-button"
+            )
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        const target =
+                            document
+                                .getElementById(
+                                    button.dataset.target
+                                );
+
+
+                        navigator
+                            .clipboard
+                            .writeText(
+                                target.textContent
+                            );
+
+
+                        button.textContent =
+                            "コピーしました！";
+
+
+                        setTimeout(
+                            () => {
+
+                                button.textContent =
+                                    "コピー";
+
+                            },
+                            1500
+                        );
+
+                    }
+                );
+
+            });
+
+
+    </script>
+
+</body>
+
+</html>
+```
 
